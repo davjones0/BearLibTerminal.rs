@@ -8,3 +8,8 @@ They can also be found in the [releases](https://github.com/nabijaczleweli/BearL
 
 # Docs
 Autoupdated docs can be found [here](https://cdn.rawgit.com/nabijaczleweli/BearLibTerminal.rs/doc/bear_lib_terminal/index.html).
+
+# Recently added feature
+The ability to set multiple bitmap fonts by assigning them an alias has been added. This can be done by specifying a bitmap font as described in the above docs then use .font_name("example") to assign that font a alias.  Which can be refered to by wrapping text in the [font=] tags when using the put funcitons.
+
+example: terminal::put_xy(10, 10, "[font=example]@[/font]"); 
