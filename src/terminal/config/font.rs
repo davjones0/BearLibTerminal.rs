@@ -34,6 +34,7 @@ use terminal::config::{ConfigPart, escape_config_string};
 /// Construct a bitmap font override segment repr.
 pub fn bitmap<T: AsRef<Path>>(origin: Origin, path: T) -> Bitmap {
 	Bitmap{
+        font_name: None,
 		origin: origin,
 		path: path.as_ref().to_str().unwrap().to_string(),
 		size: None,
@@ -121,6 +122,7 @@ pub enum Align {
 /// Refer to [the official documentation](http://foo.wyrd.name/en:bearlibterminal:reference:configuration#font_and_tileset_management).
 #[derive(Clone, Debug, Eq, PartialEq, Hash)]
 pub struct Bitmap {
+    font_name    : Option<String>,
 	origin       : Origin,
 	path         : String,
 	size         : Option<Size>,
@@ -186,6 +188,11 @@ impl Bitmap {
 	///
 	/// Default: `1x1`.
 	pub fn spacing      (mut self, spacing: Size)               -> Self {self.spacing       = Some(spacing)      ; self}
+
+    /// How to assign font names.
+    /// 
+    /// Default: None
+    pub fn font_name    (mut self, font_name: String)           -> Self {self.font_name     = Some(font_name)   ; self}
 }
 
 /// For all functions consult the corresponding attributes in
@@ -218,7 +225,12 @@ impl TrueType {
 
 impl ConfigPart for Bitmap {
 	fn to_config_str(&self) -> String {
-		format!("{}: {}{}{}{}{}{}{}{}{};", self.origin, escape_config_string(&self.path),
+		format!("{}{}: {}{}{}{}{}{}{}{}{};", 
+            match self.font_name {
+                None    => "".to_string(),
+                Some(ref font_name) => format!("{} ", font_name),
+            },
+            self.origin, escape_config_string(&self.path),
 			match self.size {
 				None           => "".to_string(),
 				Some(ref size) => format!(", size={}", size),
